@@ -16,13 +16,29 @@ const stats = [{
   label: 'Online Support'
 }];
 export default function HeroSection() {
-  return <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-background">
+  return <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-b from-sky-100 via-sky-50 to-emerald-100">
       {/* Background texture */}
       <div className="absolute inset-0 vintage-texture pointer-events-none" />
       
       {/* Decorative elements */}
       <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
+      
+      {/* Mountain/Grass Wave Background */}
+      <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
+        {/* Back mountain layer */}
+        <svg className="absolute bottom-0 w-full" viewBox="0 0 1440 320" preserveAspectRatio="none" style={{ height: '200px' }}>
+          <path fill="hsl(142, 40%, 45%)" d="M0,192L48,181.3C96,171,192,149,288,154.7C384,160,480,192,576,197.3C672,203,768,181,864,165.3C960,149,1056,139,1152,154.7C1248,171,1344,213,1392,234.7L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+        </svg>
+        {/* Front grass layer */}
+        <svg className="absolute bottom-0 w-full" viewBox="0 0 1440 320" preserveAspectRatio="none" style={{ height: '150px' }}>
+          <path fill="hsl(142, 45%, 55%)" d="M0,224L60,213.3C120,203,240,181,360,186.7C480,192,600,224,720,229.3C840,235,960,213,1080,197.3C1200,181,1320,171,1380,165.3L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path>
+        </svg>
+        {/* Foreground grass */}
+        <svg className="absolute bottom-0 w-full" viewBox="0 0 1440 320" preserveAspectRatio="none" style={{ height: '100px' }}>
+          <path fill="hsl(142, 50%, 60%)" d="M0,288L48,277.3C96,267,192,245,288,250.7C384,256,480,288,576,282.7C672,277,768,235,864,224C960,213,1056,235,1152,245.3C1248,256,1344,256,1392,256L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+        </svg>
+      </div>
 
       <div className="container mx-auto px-6 pt-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
