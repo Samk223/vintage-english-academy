@@ -1,0 +1,4 @@
+project_id = "gqupnwmucfgoecgvjrvf"
+
+[functions.laila-chat]
+verify_jwt = false
