@@ -61,6 +61,48 @@ export type Database = {
           },
         ]
       }
+      test_attempts: {
+        Row: {
+          ai_evaluation: Json | null
+          answers: Json
+          cefr_level: string | null
+          completed_at: string | null
+          created_at: string
+          id: string
+          recommended_course: string | null
+          score_percentage: number | null
+          test_type: string
+          user_email: string | null
+          user_name: string | null
+        }
+        Insert: {
+          ai_evaluation?: Json | null
+          answers?: Json
+          cefr_level?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          recommended_course?: string | null
+          score_percentage?: number | null
+          test_type: string
+          user_email?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          ai_evaluation?: Json | null
+          answers?: Json
+          cefr_level?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          recommended_course?: string | null
+          score_percentage?: number | null
+          test_type?: string
+          user_email?: string | null
+          user_name?: string | null
+        }
+        Relationships: []
+      }
       time_slots: {
         Row: {
           created_at: string
