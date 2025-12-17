@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.evaluate-test]
 verify_jwt = false
+
+[functions.generate-listening-audio]
+verify_jwt = false

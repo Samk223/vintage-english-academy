@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, PenLine, Headphones, ArrowRight, ArrowLeft, Loader2, Download, CheckCircle, Home } from 'lucide-react';
+import { X, PenLine, Headphones, ArrowRight, ArrowLeft, Loader2, Download, CheckCircle, Home, Volume2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
@@ -16,7 +16,6 @@ interface Question {
   question: string;
   type: 'easy' | 'medium' | 'hard' | 'descriptive';
   wordLimit?: number;
-  audioUrl?: string;
 }
 
 const writtenQuestions: Question[] = [
@@ -27,10 +26,10 @@ const writtenQuestions: Question[] = [
 ];
 
 const listeningQuestions: Question[] = [
-  { id: 1, question: "What is the speaker talking about in this audio clip?", type: 'easy', audioUrl: "https://ia800500.us.archive.org/15/items/MLKDream/MLKDream_64kb.mp3" },
-  { id: 2, question: "Describe the main theme and tone of this passage.", type: 'medium', audioUrl: "https://ia800301.us.archive.org/17/items/nonfictionaudiobooks/JFK_speech_64kb.mp3" },
-  { id: 3, question: "What key message is the speaker trying to convey?", type: 'hard', audioUrl: "https://ia800500.us.archive.org/15/items/MLKDream/MLKDream_64kb.mp3" },
-  { id: 4, question: "Summarize the content and provide your interpretation.", type: 'descriptive', audioUrl: "https://ia800301.us.archive.org/17/items/nonfictionaudiobooks/JFK_speech_64kb.mp3" },
+  { id: 1, question: "What does the speaker tell you about themselves?", type: 'easy' },
+  { id: 2, question: "Describe the speaker's daily morning routine.", type: 'medium' },
+  { id: 3, question: "What reasons does the speaker give for learning English?", type: 'hard' },
+  { id: 4, question: "Summarize the speaker's weekend visit and what they did.", type: 'descriptive' },
 ];
 
 type TestType = 'written' | 'listening' | null;
@@ -68,14 +67,65 @@ export default function DemoTestModal({ isOpen, onClose }: DemoTestModalProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [results, setResults] = useState<TestResults | null>(null);
+  const [audioUrls, setAudioUrls] = useState<Record<number, string>>({});
+  const [audioLoading, setAudioLoading] = useState(false);
 
   const questions = testType === 'written' ? writtenQuestions : listeningQuestions;
+
+  // Generate audio for listening test questions
+  const generateAudio = useCallback(async (questionId: number) => {
+    if (audioUrls[questionId]) return; // Already cached
+    
+    setAudioLoading(true);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-listening-audio`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({ questionId }),
+        }
+      );
+
+      if (!response.ok) throw new Error('Failed to generate audio');
+      
+      const data = await response.json();
+      if (data.error) throw new Error(data.error);
+      
+      const audioUrl = `data:audio/mpeg;base64,${data.audioContent}`;
+      setAudioUrls(prev => ({ ...prev, [questionId]: audioUrl }));
+    } catch (error) {
+      console.error('Error generating audio:', error);
+      toast({
+        title: 'Audio Error',
+        description: 'Could not load audio. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setAudioLoading(false);
+    }
+  }, [audioUrls, toast]);
+
+  // Load audio when question changes in listening test
+  useEffect(() => {
+    if (testType === 'listening' && phase === 'test') {
+      const questionId = listeningQuestions[currentQuestion]?.id;
+      if (questionId) {
+        generateAudio(questionId);
+      }
+    }
+  }, [testType, phase, currentQuestion, generateAudio]);
 
   const handleStartTest = (type: TestType) => {
     setTestType(type);
     setPhase('test');
     setCurrentQuestion(0);
     setAnswers({});
+    setAudioUrls({});
   };
 
   const handleAnswerChange = (value: string) => {
@@ -312,16 +362,38 @@ export default function DemoTestModal({ isOpen, onClose }: DemoTestModalProps) {
                 </div>
 
                 {/* Audio Player for Listening Test */}
-                {testType === 'listening' && questions[currentQuestion].audioUrl && (
+                {testType === 'listening' && (
                   <div className="bg-secondary/50 rounded-lg p-4">
-                    <p className="text-sm text-muted-foreground mb-2">Listen to the audio:</p>
-                    <audio
-                      controls
-                      className="w-full"
-                      src={questions[currentQuestion].audioUrl}
-                    >
-                      Your browser does not support the audio element.
-                    </audio>
+                    <p className="text-sm text-muted-foreground mb-2 flex items-center gap-2">
+                      <Volume2 className="w-4 h-4" />
+                      Listen to the audio:
+                    </p>
+                    {audioLoading ? (
+                      <div className="flex items-center justify-center py-4 gap-2 text-muted-foreground">
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span className="text-sm">Generating audio...</span>
+                      </div>
+                    ) : audioUrls[questions[currentQuestion].id] ? (
+                      <audio
+                        key={questions[currentQuestion].id}
+                        controls
+                        className="w-full"
+                        src={audioUrls[questions[currentQuestion].id]}
+                      >
+                        Your browser does not support the audio element.
+                      </audio>
+                    ) : (
+                      <div className="flex items-center justify-center py-4">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => generateAudio(questions[currentQuestion].id)}
+                        >
+                          <Volume2 className="w-4 h-4 mr-2" />
+                          Load Audio
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 )}
 
