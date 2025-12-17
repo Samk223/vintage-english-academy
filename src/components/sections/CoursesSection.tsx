@@ -1,8 +1,10 @@
 import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, Suspense, lazy } from 'react';
 import { BookOpen, Briefcase, GraduationCap, Users, Video, MessageCircle, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
+const FloatingPencil = lazy(() => import('@/components/3d/FloatingPencil'));
 
 const courses = [
   {
@@ -53,8 +55,15 @@ export default function CoursesSection() {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
   return (
-    <section id="courses" className="py-24 md:py-32 bg-background relative">
-      <div className="container mx-auto px-6" ref={ref}>
+    <section id="courses" className="py-24 md:py-32 bg-background relative overflow-hidden">
+      {/* 3D Floating Pencil - Right Side */}
+      <div className="absolute right-0 top-1/4 w-72 h-96 hidden lg:block pointer-events-none opacity-60">
+        <Suspense fallback={null}>
+          <FloatingPencil />
+        </Suspense>
+      </div>
+      
+      <div className="container mx-auto px-6 relative z-10" ref={ref}>
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
