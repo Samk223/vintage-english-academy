@@ -14,13 +14,97 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      bookings: {
+        Row: {
+          course: string
+          created_at: string
+          email: string
+          id: string
+          message: string | null
+          name: string
+          phone: string
+          slot_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          course: string
+          created_at?: string
+          email: string
+          id?: string
+          message?: string | null
+          name: string
+          phone: string
+          slot_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          course?: string
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string | null
+          name?: string
+          phone?: string
+          slot_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_slot_id_fkey"
+            columns: ["slot_id"]
+            isOneToOne: false
+            referencedRelation: "time_slots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      time_slots: {
+        Row: {
+          created_at: string
+          end_time: string
+          id: string
+          is_available: boolean
+          slot_date: string
+          start_time: string
+        }
+        Insert: {
+          created_at?: string
+          end_time: string
+          id?: string
+          is_available?: boolean
+          slot_date: string
+          start_time: string
+        }
+        Update: {
+          created_at?: string
+          end_time?: string
+          id?: string
+          is_available?: boolean
+          slot_date?: string
+          start_time?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      book_slot: {
+        Args: {
+          p_course: string
+          p_email: string
+          p_message: string
+          p_name: string
+          p_phone: string
+          p_slot_id: string
+        }
+        Returns: string
+      }
+      generate_weekly_slots: { Args: never; Returns: undefined }
     }
     Enums: {
       [_ in never]: never
