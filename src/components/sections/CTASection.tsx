@@ -1,9 +1,7 @@
 import { motion, useInView } from 'framer-motion';
-import { useRef, Suspense, lazy } from 'react';
+import { useRef } from 'react';
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
-const FloatingGradCap = lazy(() => import('@/components/3d/FloatingGradCap'));
 
 const benefits = [
   'Personalized learning path',
@@ -23,22 +21,8 @@ export default function CTASection() {
         <div className="absolute top-0 left-1/4 w-72 h-72 bg-accent rounded-full blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary-foreground rounded-full blur-3xl" />
       </div>
-      
-      {/* 3D Graduation Cap - Left Side */}
-      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-64 h-80 hidden lg:block pointer-events-none opacity-40">
-        <Suspense fallback={null}>
-          <FloatingGradCap />
-        </Suspense>
-      </div>
-      
-      {/* 3D Graduation Cap - Right Side */}
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-64 h-80 hidden lg:block pointer-events-none opacity-40">
-        <Suspense fallback={null}>
-          <FloatingGradCap />
-        </Suspense>
-      </div>
 
-      <div className="container mx-auto px-6 relative z-10" ref={ref}>
+      <div className="container mx-auto px-6 relative" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}

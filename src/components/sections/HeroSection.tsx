@@ -1,9 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowDown, Sparkles, Users, Award, Clock, BookOpen, GraduationCap, Pencil, Globe, MessageCircle, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Suspense, lazy } from 'react';
 
-const FloatingShapes = lazy(() => import('@/components/3d/FloatingShapes'));
 const stats = [{
   icon: Users,
   value: '500+',
@@ -34,13 +32,6 @@ export default function HeroSection() {
   return <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-b from-background via-secondary/30 to-primary/10">
       {/* Background texture */}
       <div className="absolute inset-0 vintage-texture pointer-events-none" />
-      
-      {/* 3D Floating Shapes Background */}
-      <Suspense fallback={null}>
-        <div className="absolute inset-0 z-0">
-          <FloatingShapes />
-        </div>
-      </Suspense>
       
       {/* Decorative blur elements */}
       <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />

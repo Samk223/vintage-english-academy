@@ -1,9 +1,7 @@
 import { motion, useInView } from 'framer-motion';
-import { useRef, useState, Suspense, lazy } from 'react';
+import { useRef, useState } from 'react';
 import { Quote, ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-
-const FloatingBook = lazy(() => import('@/components/3d/FloatingBook'));
 
 const testimonials = [
   {
@@ -59,15 +57,8 @@ export default function TestimonialsSection() {
         <div className="absolute bottom-10 right-10 w-60 h-60 border border-primary-foreground rounded-full" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-primary-foreground rounded-full" />
       </div>
-      
-      {/* 3D Floating Book - Left Side */}
-      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-72 h-96 hidden lg:block pointer-events-none opacity-30">
-        <Suspense fallback={null}>
-          <FloatingBook />
-        </Suspense>
-      </div>
 
-      <div className="container mx-auto px-6 relative z-10" ref={ref}>
+      <div className="container mx-auto px-6 relative" ref={ref}>
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
