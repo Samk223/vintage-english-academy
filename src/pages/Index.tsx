@@ -7,6 +7,7 @@ import TestimonialsSection from '@/components/sections/TestimonialsSection';
 import ContactSection from '@/components/sections/ContactSection';
 import MarqueeSection from '@/components/sections/MarqueeSection';
 import CTASection from '@/components/sections/CTASection';
+import LailaChatbot from '@/components/chatbot/LailaChatbot';
 
 const Index = () => {
   return (
@@ -20,6 +21,7 @@ const Index = () => {
       <TestimonialsSection />
       <ContactSection />
       <Footer />
+      <LailaChatbot />
     </main>
   );
 };
