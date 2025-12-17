@@ -1,6 +1,8 @@
 import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, Suspense, lazy } from 'react';
 import { GraduationCap, Target, Heart, Lightbulb } from 'lucide-react';
+
+const FloatingGlobe = lazy(() => import('@/components/3d/FloatingGlobe'));
 
 const features = [
   {
@@ -44,32 +46,23 @@ export default function AboutSection() {
             className="relative"
           >
             <div className="relative aspect-square max-w-lg mx-auto">
-              {/* Decorative frame */}
-              <div className="absolute inset-4 border-2 border-primary/20 rounded-lg" />
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg" />
-              
-              {/* Main content */}
-              <div className="absolute inset-8 bg-card rounded-lg shadow-card flex items-center justify-center">
-                <div className="text-center p-8">
-                  <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center">
-                    <GraduationCap className="w-12 h-12 text-primary" />
-                  </div>
-                  <h3 className="font-display text-3xl font-bold text-foreground mb-2">10+ Years</h3>
-                  <p className="text-muted-foreground">of Teaching Excellence</p>
-                  <div className="mt-6 pt-6 border-t border-border">
-                    <p className="font-display text-xl italic text-primary">
-                      "Every student has a voice. I help them find it."
-                    </p>
+              {/* 3D Globe */}
+              <Suspense fallback={
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center">
+                    <GraduationCap className="w-12 h-12 text-primary animate-pulse" />
                   </div>
                 </div>
-              </div>
+              }>
+                <FloatingGlobe />
+              </Suspense>
 
               {/* Floating badges */}
               <motion.div
                 initial={{ opacity: 0, scale: 0 }}
                 animate={isInView ? { opacity: 1, scale: 1 } : {}}
                 transition={{ duration: 0.5, delay: 0.6 }}
-                className="absolute -top-4 -right-4 bg-accent text-accent-foreground px-4 py-2 rounded-full shadow-lg font-semibold text-sm"
+                className="absolute top-4 right-4 bg-accent text-accent-foreground px-4 py-2 rounded-full shadow-lg font-semibold text-sm z-10"
               >
                 Mumbai Based
               </motion.div>
@@ -78,7 +71,7 @@ export default function AboutSection() {
                 initial={{ opacity: 0, scale: 0 }}
                 animate={isInView ? { opacity: 1, scale: 1 } : {}}
                 transition={{ duration: 0.5, delay: 0.8 }}
-                className="absolute -bottom-4 -left-4 bg-primary text-primary-foreground px-4 py-2 rounded-full shadow-lg font-semibold text-sm"
+                className="absolute bottom-4 left-4 bg-primary text-primary-foreground px-4 py-2 rounded-full shadow-lg font-semibold text-sm z-10"
               >
                 Online & Offline
               </motion.div>
