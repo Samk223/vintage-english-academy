@@ -27,10 +27,10 @@ const writtenQuestions: Question[] = [
 ];
 
 const listeningQuestions: Question[] = [
-  { id: 1, question: "What is the main topic of the conversation?", type: 'easy', audioUrl: "https://www.elllo.org/Audio/A0851/857-Santi-FaveFood.mp3" },
-  { id: 2, question: "How does the speaker describe their daily routine?", type: 'medium', audioUrl: "https://www.elllo.org/Audio/A0851/858-Santi-Breakfast.mp3" },
-  { id: 3, question: "What reasons does the speaker give for their opinion?", type: 'hard', audioUrl: "https://www.elllo.org/Audio/A0851/859-Santi-Coffee.mp3" },
-  { id: 4, question: "Summarize the key points discussed in the audio.", type: 'descriptive', audioUrl: "https://www.elllo.org/Audio/A0851/860-Santi-Snacks.mp3" },
+  { id: 1, question: "What is the speaker talking about in this audio clip?", type: 'easy', audioUrl: "https://ia800500.us.archive.org/15/items/MLKDream/MLKDream_64kb.mp3" },
+  { id: 2, question: "Describe the main theme and tone of this passage.", type: 'medium', audioUrl: "https://ia800301.us.archive.org/17/items/nonfictionaudiobooks/JFK_speech_64kb.mp3" },
+  { id: 3, question: "What key message is the speaker trying to convey?", type: 'hard', audioUrl: "https://ia800500.us.archive.org/15/items/MLKDream/MLKDream_64kb.mp3" },
+  { id: 4, question: "Summarize the content and provide your interpretation.", type: 'descriptive', audioUrl: "https://ia800301.us.archive.org/17/items/nonfictionaudiobooks/JFK_speech_64kb.mp3" },
 ];
 
 type TestType = 'written' | 'listening' | null;
