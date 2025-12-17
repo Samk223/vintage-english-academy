@@ -27,10 +27,10 @@ const writtenQuestions: Question[] = [
 ];
 
 const listeningQuestions: Question[] = [
-  { id: 1, question: "What is the main topic of the conversation?", type: 'easy', audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-  { id: 2, question: "How does the speaker describe their experience?", type: 'medium', audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
-  { id: 3, question: "What conclusion does the speaker reach?", type: 'hard', audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
-  { id: 4, question: "Summarize the key points discussed in the audio.", type: 'descriptive', audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
+  { id: 1, question: "What is the main topic of the conversation?", type: 'easy', audioUrl: "https://www.elllo.org/Audio/A0851/857-Santi-FaveFood.mp3" },
+  { id: 2, question: "How does the speaker describe their daily routine?", type: 'medium', audioUrl: "https://www.elllo.org/Audio/A0851/858-Santi-Breakfast.mp3" },
+  { id: 3, question: "What reasons does the speaker give for their opinion?", type: 'hard', audioUrl: "https://www.elllo.org/Audio/A0851/859-Santi-Coffee.mp3" },
+  { id: 4, question: "Summarize the key points discussed in the audio.", type: 'descriptive', audioUrl: "https://www.elllo.org/Audio/A0851/860-Santi-Snacks.mp3" },
 ];
 
 type TestType = 'written' | 'listening' | null;
