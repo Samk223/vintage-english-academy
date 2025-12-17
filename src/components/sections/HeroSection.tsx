@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowDown, Sparkles, Users, Award, Clock, BookOpen, GraduationCap, Pencil, Globe, MessageCircle, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import DemoTestModal from '@/components/demo-test/DemoTestModal';
 
 const stats = [{
   icon: Users,
@@ -29,6 +31,8 @@ const floatingElements = [
 ];
 
 export default function HeroSection() {
+  const [isTestModalOpen, setIsTestModalOpen] = useState(false);
+
   return <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-b from-background via-secondary/30 to-primary/10">
       {/* Background texture */}
       <div className="absolute inset-0 vintage-texture pointer-events-none" />
@@ -121,8 +125,8 @@ export default function HeroSection() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-12">
-              <Button size="lg" className="text-lg px-8" asChild>
-                <a href="#contact">Start Your Journey</a>
+              <Button size="lg" className="text-lg px-8" onClick={() => setIsTestModalOpen(true)}>
+                Start Your Journey
               </Button>
               <Button size="lg" variant="outline" className="text-lg px-8" asChild>
                 <a href="#courses">Explore Courses</a>
@@ -207,5 +211,8 @@ export default function HeroSection() {
           </a>
         </motion.div>
       </div>
+
+      {/* Demo Test Modal */}
+      <DemoTestModal isOpen={isTestModalOpen} onClose={() => setIsTestModalOpen(false)} />
     </section>;
 }

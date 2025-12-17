@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.book-trial]
 verify_jwt = false
+
+[functions.evaluate-test]
+verify_jwt = false
