@@ -4,16 +4,17 @@ import { MessageCircle, X, Send, Moon, Globe, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import { streamChat as apiStreamChat, ChatMessage } from '@/services/api';
 
-type Message = { role: 'user' | 'assistant'; content: string };
 type Language = 'en' | 'hi';
 
-const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/laila-chat`;
+// Use local API or fallback to Supabase
+const USE_LOCAL_API = import.meta.env.VITE_API_URL ? true : false;
 
 export default function LailaChatbot() {
   const [isAwake, setIsAwake] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [language, setLanguage] = useState<Language>('en');
@@ -33,9 +34,9 @@ export default function LailaChatbot() {
     setIsAwake(true);
     setIsOpen(true);
     // Initial greeting
-    const greeting: Message = {
+    const greeting: ChatMessage = {
       role: 'assistant',
-      content: language === 'hi' 
+      content: language === 'hi'
         ? "नमस्ते! 🌟 मैं लैला हूं, आपकी इंग्लिश कोर्स एडवाइजर। मैं अभी जाग गई! आपका नाम क्या है?"
         : "Hello! 🌟 I'm Laila, your English course advisor. I just woke up! What's your name?"
     };
@@ -58,9 +59,55 @@ export default function LailaChatbot() {
     });
   };
 
-  const streamChat = async (userMessages: Message[]) => {
+  const streamChatLocal = async (userMessages: ChatMessage[]) => {
     setIsLoading(true);
     let assistantContent = '';
+
+    try {
+      await apiStreamChat({
+        messages: userMessages,
+        language,
+        userName,
+        onDelta: (content) => {
+          assistantContent += content;
+          setMessages(prev => {
+            const last = prev[prev.length - 1];
+            if (last?.role === 'assistant') {
+              return prev.map((m, i) => 
+                i === prev.length - 1 ? { ...m, content: assistantContent } : m
+              );
+            }
+            return [...prev, { role: 'assistant', content: assistantContent }];
+          });
+        },
+        onDone: () => {
+          // Detect if this is the first user message (likely their name)
+          if (!userName && userMessages.length === 1) {
+            const possibleName = userMessages[0].content.trim();
+            if (possibleName.length < 30 && !possibleName.includes(' ') || possibleName.split(' ').length <= 3) {
+              setUserName(possibleName);
+            }
+          }
+        },
+        onError: (error) => {
+          toast({
+            title: 'Error',
+            description: error.message || 'Failed to get response',
+            variant: 'destructive',
+          });
+        },
+      });
+    } catch (error) {
+      console.error('Chat error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const streamChatSupabase = async (userMessages: ChatMessage[]) => {
+    setIsLoading(true);
+    let assistantContent = '';
+    const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/laila-chat`;
 
     try {
       const resp = await fetch(CHAT_URL, {
@@ -142,11 +189,13 @@ export default function LailaChatbot() {
     }
   };
 
+  const streamChat = USE_LOCAL_API ? streamChatLocal : streamChatSupabase;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
 
-    const userMessage: Message = { role: 'user', content: input.trim() };
+    const userMessage: ChatMessage = { role: 'user', content: input.trim() };
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setInput('');
