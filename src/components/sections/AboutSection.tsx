@@ -1,5 +1,5 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import { GraduationCap, Target, Heart, Lightbulb } from 'lucide-react';
 
 const features = [
@@ -27,27 +27,11 @@ const features = [
 
 export default function AboutSection() {
   const sectionRef = useRef<HTMLElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
   
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"]
   });
-
-  // Control video playback based on scroll
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const unsubscribe = scrollYProgress.on("change", (progress) => {
-      if (video.duration) {
-        // Map scroll progress to video time
-        video.currentTime = progress * video.duration;
-      }
-    });
-
-    return () => unsubscribe();
-  }, [scrollYProgress]);
 
   // Parallax transforms for various elements
   const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
@@ -57,17 +41,33 @@ export default function AboutSection() {
     <section 
       id="about" 
       ref={sectionRef}
-      className="py-24 md:py-32 bg-secondary/30 relative overflow-hidden"
+      className="py-24 md:py-32 relative overflow-hidden"
     >
+      {/* Video Background */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover opacity-15"
+          style={{ filter: 'brightness(1.1)' }}
+        >
+          <source src="/videos/about-bg-video.mp4" type="video/mp4" />
+        </video>
+        {/* Overlay for better text contrast */}
+        <div className="absolute inset-0 bg-background/70" />
+      </div>
+
       {/* Background decoration with parallax */}
       <motion.div 
         style={{ y: backgroundY }}
-        className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/5 to-transparent" 
+        className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/5 to-transparent z-[1]" 
       />
       
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left - Video */}
+          {/* Left - Quote and Badge */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -75,22 +75,10 @@ export default function AboutSection() {
             transition={{ duration: 0.8 }}
             className="relative"
           >
-            <div className="relative max-w-lg mx-auto">
-              {/* Video container */}
-              <div className="relative rounded-lg overflow-hidden shadow-card">
-                <video
-                  ref={videoRef}
-                  src="/videos/about-video.mp4"
-                  muted
-                  playsInline
-                  preload="auto"
-                  className="w-full h-auto"
-                />
-              </div>
-              
-              {/* Quote below video */}
-              <div className="mt-6 text-center">
-                <p className="font-display text-xl italic text-primary">
+            <div className="relative max-w-lg mx-auto text-center">
+              {/* Quote */}
+              <div className="mb-6">
+                <p className="font-display text-2xl md:text-3xl italic text-primary">
                   "Every student has a voice. I help them find it."
                 </p>
               </div>
@@ -101,9 +89,9 @@ export default function AboutSection() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.4 }}
-                className="mt-4 flex justify-center"
+                className="flex justify-center"
               >
-                <div className="bg-primary text-primary-foreground px-4 py-2 rounded-full shadow-lg font-semibold text-sm">
+                <div className="bg-primary text-primary-foreground px-6 py-3 rounded-full shadow-lg font-semibold text-base">
                   Online & Offline
                 </div>
               </motion.div>
