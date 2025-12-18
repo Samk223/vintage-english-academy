@@ -1,5 +1,5 @@
-import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef, useEffect } from 'react';
 import { GraduationCap, Target, Heart, Lightbulb } from 'lucide-react';
 
 const features = [
@@ -26,69 +26,96 @@ const features = [
 ];
 
 export default function AboutSection() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const sectionRef = useRef<HTMLElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+
+  // Control video playback based on scroll
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const unsubscribe = scrollYProgress.on("change", (progress) => {
+      if (video.duration) {
+        // Map scroll progress to video time
+        video.currentTime = progress * video.duration;
+      }
+    });
+
+    return () => unsubscribe();
+  }, [scrollYProgress]);
+
+  // Parallax transforms for various elements
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
+  const contentY = useTransform(scrollYProgress, [0, 1], ['0%', '-10%']);
 
   return (
-    <section id="about" className="py-24 md:py-32 bg-secondary/30 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/5 to-transparent" />
+    <section 
+      id="about" 
+      ref={sectionRef}
+      className="py-24 md:py-32 bg-secondary/30 relative overflow-hidden"
+    >
+      {/* Background decoration with parallax */}
+      <motion.div 
+        style={{ y: backgroundY }}
+        className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/5 to-transparent" 
+      />
       
-      <div className="container mx-auto px-6" ref={ref}>
+      <div className="container mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left - Image/Visual */}
+          {/* Left - Video */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
             transition={{ duration: 0.8 }}
             className="relative"
           >
-            <div className="relative aspect-square max-w-lg mx-auto">
-              {/* Decorative frame */}
-              <div className="absolute inset-4 border-2 border-primary/20 rounded-lg" />
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10 rounded-lg" />
+            <div className="relative max-w-lg mx-auto">
+              {/* Video container */}
+              <div className="relative rounded-lg overflow-hidden shadow-card">
+                <video
+                  ref={videoRef}
+                  src="/videos/about-video.mp4"
+                  muted
+                  playsInline
+                  preload="auto"
+                  className="w-full h-auto"
+                />
+              </div>
               
-              {/* Main content */}
-              <div className="absolute inset-8 bg-card rounded-lg shadow-card flex items-center justify-center">
-                <div className="text-center p-8">
-                  <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center">
-                    <GraduationCap className="w-12 h-12 text-primary" />
-                  </div>
-                  <h3 className="font-display text-3xl font-bold text-foreground mb-2">10+ Years</h3>
-                  <p className="text-muted-foreground">of Teaching Excellence</p>
-                  <div className="mt-6 pt-6 border-t border-border">
-                    <p className="font-display text-xl italic text-primary">
-                      "Every student has a voice. I help them find it."
-                    </p>
-                  </div>
-                </div>
+              {/* Quote below video */}
+              <div className="mt-6 text-center">
+                <p className="font-display text-xl italic text-primary">
+                  "Every student has a voice. I help them find it."
+                </p>
               </div>
 
-              {/* Floating badges */}
+              {/* Online & Offline badge */}
               <motion.div
                 initial={{ opacity: 0, scale: 0 }}
-                animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ duration: 0.5, delay: 0.6 }}
-                className="absolute -top-4 -right-4 bg-accent text-accent-foreground px-4 py-2 rounded-full shadow-lg font-semibold text-sm"
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                className="mt-4 flex justify-center"
               >
-                Mumbai Based
-              </motion.div>
-              
-              <motion.div
-                initial={{ opacity: 0, scale: 0 }}
-                animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ duration: 0.5, delay: 0.8 }}
-                className="absolute -bottom-4 -left-4 bg-primary text-primary-foreground px-4 py-2 rounded-full shadow-lg font-semibold text-sm"
-              >
-                Online & Offline
+                <div className="bg-primary text-primary-foreground px-4 py-2 rounded-full shadow-lg font-semibold text-sm">
+                  Online & Offline
+                </div>
               </motion.div>
             </div>
           </motion.div>
 
-          {/* Right - Content */}
+          {/* Right - Content with parallax */}
           <motion.div
+            style={{ y: contentY }}
             initial={{ opacity: 0, x: 50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: '-100px' }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             <span className="text-primary font-semibold tracking-wider uppercase text-sm">About Us</span>
@@ -115,7 +142,8 @@ export default function AboutSection() {
                 <motion.div
                   key={feature.title}
                   initial={{ opacity: 0, y: 20 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : {}}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: 0.4 + index * 0.1 }}
                   className="flex gap-4"
                 >

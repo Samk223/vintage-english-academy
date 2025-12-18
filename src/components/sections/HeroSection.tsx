@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowDown, Sparkles, Users, Award, Clock, BookOpen, GraduationCap, Pencil, Globe, MessageCircle, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import DemoTestModal from '@/components/demo-test/DemoTestModal';
@@ -32,14 +32,26 @@ const floatingElements = [
 
 export default function HeroSection() {
   const [isTestModalOpen, setIsTestModalOpen] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"]
+  });
 
-  return <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-b from-background via-secondary/30 to-primary/10">
+  // Parallax transforms
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ['0%', '50%']);
+  const contentY = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
+  const imageY = useTransform(scrollYProgress, [0, 1], ['0%', '20%']);
+  const waveY = useTransform(scrollYProgress, [0, 1], ['0%', '-20%']);
+
+  return <section ref={sectionRef} id="home" className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-b from-background via-secondary/30 to-primary/10">
       {/* Background texture */}
       <div className="absolute inset-0 vintage-texture pointer-events-none" />
       
-      {/* Decorative blur elements */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-40 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
+      {/* Decorative blur elements with parallax */}
+      <motion.div style={{ y: backgroundY }} className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
+      <motion.div style={{ y: backgroundY }} className="absolute bottom-40 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
       
       {/* Floating 3D Educational Elements */}
       {floatingElements.map((element, index) => (
@@ -65,8 +77,8 @@ export default function HeroSection() {
         </motion.div>
       ))}
       
-      {/* Mountain/Hills Wave Background - Vintage Blue Theme */}
-      <div className="absolute bottom-0 left-0 right-0 pointer-events-none">
+      {/* Mountain/Hills Wave Background - Vintage Blue Theme with parallax */}
+      <motion.div style={{ y: waveY }} className="absolute bottom-0 left-0 right-0 pointer-events-none">
         {/* Back mountain layer - Deep navy */}
         <svg className="absolute bottom-0 w-full" viewBox="0 0 1440 320" preserveAspectRatio="none" style={{ height: '180px' }}>
           <path fill="hsl(215, 70%, 25%)" fillOpacity="0.6" d="M0,192L48,181.3C96,171,192,149,288,154.7C384,160,480,192,576,197.3C672,203,768,181,864,165.3C960,149,1056,139,1152,154.7C1248,171,1344,213,1392,234.7L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
@@ -79,9 +91,9 @@ export default function HeroSection() {
         <svg className="absolute bottom-0 w-full" viewBox="0 0 1440 320" preserveAspectRatio="none" style={{ height: '100px' }}>
           <path fill="hsl(215, 60%, 45%)" fillOpacity="0.8" d="M0,288L48,277.3C96,267,192,245,288,250.7C384,256,480,288,576,282.7C672,277,768,235,864,224C960,213,1056,235,1152,245.3C1248,256,1344,256,1392,256L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
         </svg>
-      </div>
+      </motion.div>
 
-      <div className="container mx-auto px-6 pt-20 pb-32 relative z-20">
+      <motion.div style={{ y: contentY }} className="container mx-auto px-6 pt-20 pb-32 relative z-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <motion.div initial={{
@@ -152,17 +164,23 @@ export default function HeroSection() {
             </div>
           </motion.div>
 
-          {/* Right - Hero Image */}
-          <motion.div initial={{
-          opacity: 0,
-          scale: 0.8
-        }} animate={{
-          opacity: 1,
-          scale: 1
-        }} transition={{
-          duration: 1,
-          delay: 0.4
-        }} className="relative">
+          {/* Right - Hero Image with parallax */}
+          <motion.div 
+            style={{ y: imageY }}
+            initial={{
+              opacity: 0,
+              scale: 0.8
+            }} 
+            animate={{
+              opacity: 1,
+              scale: 1
+            }} 
+            transition={{
+              duration: 1,
+              delay: 0.4
+            }} 
+            className="relative"
+          >
             <div className="relative w-full aspect-square max-w-lg mx-auto">
               {/* Floating animation wrapper */}
               <motion.div animate={{
@@ -210,7 +228,7 @@ export default function HeroSection() {
             <ArrowDown className="w-5 h-5 scroll-indicator" />
           </a>
         </motion.div>
-      </div>
+      </motion.div>
 
       {/* Demo Test Modal */}
       <DemoTestModal isOpen={isTestModalOpen} onClose={() => setIsTestModalOpen(false)} />
