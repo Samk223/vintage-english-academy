@@ -50,7 +50,7 @@ export default function AboutSection() {
           loop
           muted
           playsInline
-          className="w-full h-full object-cover opacity-40"
+          className="w-full h-full object-cover opacity-80"
           style={{ filter: 'brightness(1.1)' }}
         >
           <source src="/videos/about-bg-video.mp4" type="video/mp4" />
