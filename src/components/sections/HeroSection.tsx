@@ -33,7 +33,7 @@ const floatingElements = [
 export default function HeroSection() {
   const [isTestModalOpen, setIsTestModalOpen] = useState(false);
 
-  return <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-b from-background via-secondary/30 to-primary/10">
+  return <section id="home" className="relative min-h-screen flex items-center overflow-hidden" style={{ backgroundImage: "url('/images/notebook-bg.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
       {/* Background texture */}
       <div className="absolute inset-0 vintage-texture pointer-events-none" />
       
