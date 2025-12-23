@@ -8,10 +8,12 @@ import ContactSection from '@/components/sections/ContactSection';
 import MarqueeSection from '@/components/sections/MarqueeSection';
 import CTASection from '@/components/sections/CTASection';
 import LailaChatbot from '@/components/chatbot/LailaChatbot';
+import CursorFollower from '@/components/CursorFollower';
 
 const Index = () => {
   return (
     <main className="min-h-screen">
+      <CursorFollower />
       <Navbar />
       <HeroSection />
       <MarqueeSection />
