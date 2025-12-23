@@ -1,9 +1,18 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import { BookOpen, Briefcase, GraduationCap, Users, Video, MessageCircle, ArrowRight } from 'lucide-react';
+import { BookOpen, Briefcase, GraduationCap, Users, Video, MessageCircle, ArrowRight, Target, Presentation, Sparkles, Lightbulb, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
+// Floating doodle elements for courses section
+const floatingElements = [
+  { Icon: Target, x: '3%', y: '10%', size: 28, delay: 0, duration: 5, color: 'text-primary/30' },
+  { Icon: Presentation, x: '95%', y: '8%', size: 32, delay: 0.5, duration: 6, color: 'text-accent/40' },
+  { Icon: Sparkles, x: '2%', y: '45%', size: 24, delay: 1, duration: 5.5, color: 'text-primary/25' },
+  { Icon: Lightbulb, x: '96%', y: '40%', size: 26, delay: 1.5, duration: 6.5, color: 'text-accent/35' },
+  { Icon: Trophy, x: '4%', y: '80%', size: 30, delay: 0.8, duration: 4.5, color: 'text-primary/30' },
+  { Icon: Sparkles, x: '94%', y: '75%', size: 22, delay: 2, duration: 5, color: 'text-accent/30' },
+];
 const courses = [
   {
     icon: Users,
@@ -53,7 +62,27 @@ export default function CoursesSection() {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
   return (
-    <section id="courses" className="py-24 md:py-32 bg-background relative">
+    <section id="courses" className="py-24 md:py-32 bg-background relative overflow-hidden">
+      {/* Floating Educational Doodles */}
+      {floatingElements.map((element, index) => (
+        <motion.div
+          key={index}
+          className={`absolute ${element.color} pointer-events-none z-10`}
+          style={{ left: element.x, top: element.y }}
+          initial={{ opacity: 0 }}
+          animate={{ 
+            opacity: [0.4, 0.7, 0.4],
+            y: [0, -8, 0],
+          }}
+          transition={{
+            opacity: { duration: element.duration, repeat: Infinity, ease: "easeInOut" },
+            y: { duration: element.duration, repeat: Infinity, ease: "easeInOut", delay: element.delay },
+          }}
+        >
+          <element.Icon size={element.size} strokeWidth={1} />
+        </motion.div>
+      ))}
+      
       <div className="container mx-auto px-6" ref={ref}>
         {/* Section Header */}
         <motion.div
