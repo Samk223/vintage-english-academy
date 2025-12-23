@@ -18,50 +18,39 @@ const stats = [{
   label: 'Online Support'
 }];
 
-// Floating educational elements
+// Floating educational elements - positioned at edges like notebook doodles
 const floatingElements = [
-  { Icon: BookOpen, x: '8%', y: '20%', size: 48, delay: 0, duration: 4, color: 'text-primary' },
-  { Icon: GraduationCap, x: '85%', y: '15%', size: 56, delay: 0.5, duration: 5, color: 'text-accent' },
-  { Icon: Pencil, x: '12%', y: '65%', size: 36, delay: 1, duration: 4.5, color: 'text-primary/70' },
-  { Icon: Globe, x: '88%', y: '55%', size: 44, delay: 1.5, duration: 5.5, color: 'text-accent' },
-  { Icon: MessageCircle, x: '5%', y: '45%', size: 40, delay: 2, duration: 4, color: 'text-primary/80' },
-  { Icon: Star, x: '92%', y: '35%', size: 32, delay: 0.8, duration: 3.5, color: 'text-accent/80' },
-  { Icon: BookOpen, x: '75%', y: '70%', size: 38, delay: 1.2, duration: 4.8, color: 'text-primary/60' },
-  { Icon: Star, x: '18%', y: '35%', size: 28, delay: 2.5, duration: 3, color: 'text-accent/70' },
+  { Icon: BookOpen, x: '3%', y: '18%', size: 32, delay: 0, duration: 5, color: 'text-primary/50' },
+  { Icon: GraduationCap, x: '92%', y: '12%', size: 36, delay: 0.5, duration: 6, color: 'text-accent/60' },
+  { Icon: Pencil, x: '5%', y: '55%', size: 28, delay: 1, duration: 5.5, color: 'text-primary/40' },
+  { Icon: Globe, x: '94%', y: '50%', size: 30, delay: 1.5, duration: 6.5, color: 'text-accent/50' },
+  { Icon: Star, x: '96%', y: '28%', size: 20, delay: 0.8, duration: 4.5, color: 'text-accent/40' },
 ];
 
 export default function HeroSection() {
   const [isTestModalOpen, setIsTestModalOpen] = useState(false);
 
-  return <section id="home" className="relative min-h-screen flex items-center overflow-hidden" style={{ backgroundImage: "url('/images/notebook-bg.png')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}>
-      {/* Background texture */}
-      <div className="absolute inset-0 vintage-texture pointer-events-none" />
+  return <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-[#f5f5f5]" style={{ backgroundImage: "url('/images/notebook-bg.png')", backgroundSize: 'cover', backgroundPosition: 'top center', backgroundRepeat: 'no-repeat' }}>
+      {/* Subtle paper texture overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/20 pointer-events-none" />
       
-      {/* Decorative blur elements */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-40 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
-      
-      {/* Floating 3D Educational Elements */}
+      {/* Floating Educational Elements - subtle pencil doodle style */}
       {floatingElements.map((element, index) => (
         <motion.div
           key={index}
-          className={`absolute ${element.color} drop-shadow-lg pointer-events-none z-10`}
+          className={`absolute ${element.color} pointer-events-none z-10`}
           style={{ left: element.x, top: element.y }}
-          initial={{ opacity: 0, scale: 0 }}
+          initial={{ opacity: 0 }}
           animate={{ 
-            opacity: [0.6, 1, 0.6],
-            scale: 1,
-            y: [0, -25, 0],
-            rotate: [0, 10, -10, 0]
+            opacity: [0.4, 0.7, 0.4],
+            y: [0, -10, 0],
           }}
           transition={{
             opacity: { duration: element.duration, repeat: Infinity, ease: "easeInOut" },
             y: { duration: element.duration, repeat: Infinity, ease: "easeInOut", delay: element.delay },
-            rotate: { duration: element.duration * 1.5, repeat: Infinity, ease: "easeInOut", delay: element.delay },
-            scale: { duration: 0.5, delay: element.delay }
           }}
         >
-          <element.Icon size={element.size} strokeWidth={1.5} />
+          <element.Icon size={element.size} strokeWidth={1} />
         </motion.div>
       ))}
       
