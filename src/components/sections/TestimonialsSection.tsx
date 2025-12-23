@@ -1,17 +1,8 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { Quote, ChevronLeft, ChevronRight, Star, Award, MessageSquare, Heart, Sparkles, ThumbsUp } from 'lucide-react';
+import { Quote, ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-// Floating doodle elements for testimonials section
-const floatingElements = [
-  { Icon: Award, x: '4%', y: '12%', size: 26, delay: 0, duration: 5, color: 'text-primary-foreground/20' },
-  { Icon: MessageSquare, x: '93%', y: '15%', size: 30, delay: 0.5, duration: 6, color: 'text-primary-foreground/25' },
-  { Icon: Heart, x: '3%', y: '50%', size: 22, delay: 1, duration: 5.5, color: 'text-primary-foreground/15' },
-  { Icon: Sparkles, x: '95%', y: '55%', size: 24, delay: 1.5, duration: 6.5, color: 'text-primary-foreground/20' },
-  { Icon: ThumbsUp, x: '5%', y: '85%', size: 28, delay: 0.8, duration: 4.5, color: 'text-primary-foreground/18' },
-  { Icon: Sparkles, x: '92%', y: '82%', size: 20, delay: 2, duration: 5, color: 'text-primary-foreground/22' },
-];
 const testimonials = [
   {
     name: 'Priya Sharma',
@@ -66,26 +57,6 @@ export default function TestimonialsSection() {
         <div className="absolute bottom-10 right-10 w-60 h-60 border border-primary-foreground rounded-full" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-primary-foreground rounded-full" />
       </div>
-      
-      {/* Floating Educational Doodles */}
-      {floatingElements.map((element, index) => (
-        <motion.div
-          key={index}
-          className={`absolute ${element.color} pointer-events-none z-10`}
-          style={{ left: element.x, top: element.y }}
-          initial={{ opacity: 0 }}
-          animate={{ 
-            opacity: [0.3, 0.6, 0.3],
-            y: [0, -8, 0],
-          }}
-          transition={{
-            opacity: { duration: element.duration, repeat: Infinity, ease: "easeInOut" },
-            y: { duration: element.duration, repeat: Infinity, ease: "easeInOut", delay: element.delay },
-          }}
-        >
-          <element.Icon size={element.size} strokeWidth={1} />
-        </motion.div>
-      ))}
 
       <div className="container mx-auto px-6 relative" ref={ref}>
         {/* Section Header */}
