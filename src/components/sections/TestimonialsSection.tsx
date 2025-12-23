@@ -1,6 +1,6 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { Quote, ChevronLeft, ChevronRight, Star } from 'lucide-react';
+import { Quote, ChevronLeft, ChevronRight, Star, Target, Award, MessageSquare, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const testimonials = [
@@ -49,8 +49,41 @@ export default function TestimonialsSection() {
     setActiveIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
+  // Floating decorative elements
+  const floatingElements = [
+    { Icon: Target, x: '6%', y: '25%', size: 36, delay: 0, duration: 4, color: 'text-primary-foreground/20' },
+    { Icon: Award, x: '90%', y: '18%', size: 44, delay: 0.8, duration: 5, color: 'text-primary-foreground/25' },
+    { Icon: MessageSquare, x: '4%', y: '65%', size: 32, delay: 1.2, duration: 4.5, color: 'text-primary-foreground/15' },
+    { Icon: Sparkles, x: '94%', y: '60%', size: 28, delay: 1.8, duration: 3.8, color: 'text-primary-foreground/20' },
+    { Icon: Star, x: '12%', y: '45%', size: 24, delay: 2.2, duration: 3.5, color: 'text-primary-foreground/15' },
+  ];
+
   return (
     <section id="testimonials" className="py-24 md:py-32 bg-primary relative overflow-hidden">
+      {/* Floating 3D Elements */}
+      {floatingElements.map((element, index) => (
+        <motion.div
+          key={index}
+          className={`absolute ${element.color} pointer-events-none z-0`}
+          style={{ left: element.x, top: element.y }}
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ 
+            opacity: [0.3, 0.7, 0.3],
+            scale: 1,
+            y: [0, -18, 0],
+            rotate: [0, 10, -10, 0]
+          }}
+          transition={{
+            opacity: { duration: element.duration, repeat: Infinity, ease: "easeInOut" },
+            y: { duration: element.duration, repeat: Infinity, ease: "easeInOut", delay: element.delay },
+            rotate: { duration: element.duration * 1.5, repeat: Infinity, ease: "easeInOut", delay: element.delay },
+            scale: { duration: 0.5, delay: element.delay }
+          }}
+        >
+          <element.Icon size={element.size} strokeWidth={1.5} />
+        </motion.div>
+      ))}
+
       {/* Background decorations */}
       <div className="absolute top-0 left-0 w-full h-full opacity-10">
         <div className="absolute top-10 left-10 w-40 h-40 border border-primary-foreground rounded-full" />
@@ -58,7 +91,7 @@ export default function TestimonialsSection() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-primary-foreground rounded-full" />
       </div>
 
-      <div className="container mx-auto px-6 relative" ref={ref}>
+      <div className="container mx-auto px-6 relative z-10" ref={ref}>
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
